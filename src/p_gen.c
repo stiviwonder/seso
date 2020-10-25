@@ -15,17 +15,19 @@ void process_gen(void *f_pgen){
         p_tick--;
         if (p_tick == 0){
             create_process(p_queue[i]);
-            printf("[PGEN] el pruses ha sido creado >:( || pid: %ld\n", p_queue[i].pid);
+            printf("[PGEN] el pruses ha sido creado >:( || pid: %ld\n", &p_queue[i].pid);
             p_tick = (int) f_pgen;
             i++;
         }
     }
 }
 
-void create_process(struct process_q elem){
+void create_process(struct process_q* elem){
 
+    //srand(time(0));
     long pid = rand();
-    elem.pid = pid;
+    elem->pid = pid;
+
     //pid = fork();
 
     // p_queue[q_pos] = (long) pid;
