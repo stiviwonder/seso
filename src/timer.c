@@ -13,6 +13,7 @@ void timer(void *f_timer){
         if (p_tick == 0){
             sleep(1);
             printf("[TIMER] es la hora del escheduler :) !!\n");
+            sem_post(&sem_scheduler);
             p_tick = (int) f_timer;
         }
     }

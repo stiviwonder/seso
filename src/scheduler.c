@@ -4,5 +4,8 @@
 #include "global.h"
 
 void scheduler(void *tid){
-    printf("soi el scheduler !!\n");
+    while(1){
+        sem_wait(&sem_scheduler);
+        printf("[SCHEDULER] Scheduleando :)\n");
+    }
 }
