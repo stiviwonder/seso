@@ -8,26 +8,31 @@ void process_gen(void *f_pgen){
     int i = 0;
     int p_tick = (int) f_pgen;
 
-    p_queue = malloc(300*sizeof(struct process_q));
+    p_queue.data = malloc(300*sizeof(struct process_q));
+    p_queue.size = 0;
+
     while(1){
         sem_wait(&sem_pgen);
         srand(time(0));
         p_tick--;
         if (p_tick == 0){
-            create_process(p_queue[i]);
-            printf("[PGEN] el pruses ha sido creado >:( || pid: %ld\n", &p_queue[i].pid);
+            create_process();
+            printf("[PGEN] el pruses ha sido creado >:( || ");
             p_tick = (int) f_pgen;
             i++;
         }
     }
 }
 
-void create_process(struct process_q* elem){
+void create_process(){
+
+    struct process p;
 
     //srand(time(0));
     long pid = rand();
-    elem->pid = pid;
+    p.pid = pid;
 
+    memcpy(&p_queue.data[p_queue.size++], &p, sizeof(struct process));
     //pid = fork();
 
     // p_queue[q_pos] = (long) pid;
