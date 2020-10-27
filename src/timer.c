@@ -5,6 +5,8 @@
 #include <semaphore.h>
 #include "global.h"
 
+sem_t sem_timer;
+
 void timer(void *f_timer){
     int p_tick = (int) f_timer;
     while(1){

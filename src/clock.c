@@ -5,6 +5,11 @@
 #include <semaphore.h>
 #include "global.h"
 
+int tick;
+sem_t sem_timer;
+sem_t sem_pgen;
+sem_t sem_scheduler;
+
 void erlojua(void *f_clock){
     float f = *((float*)f_clock);
     float t = 1.0/f;

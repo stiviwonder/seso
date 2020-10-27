@@ -3,6 +3,9 @@
 #include <pthread.h>
 #include "global.h"
 
+struct process_q p_queue;
+sem_t sem_pgen;
+
 void process_gen(void *f_pgen){
     printf("soi el p generatorl !!\n");
     int i = 0;
@@ -17,7 +20,7 @@ void process_gen(void *f_pgen){
         p_tick--;
         if (p_tick == 0){
             create_process();
-            printf("[PGEN] el pruses ha sido creado >:( || ");
+            printf("[PGEN] el pruses ha sido creado >:( || pid: %ld\n", p_queue.data[i]);
             p_tick = (int) f_pgen;
             i++;
         }
