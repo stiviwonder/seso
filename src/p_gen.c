@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <string.h>
 #include "global.h"
 
-struct process_q p_queue;
+process_q_t p_queue;
 sem_t sem_pgen;
 
 void process_gen(void *f_pgen){
@@ -29,7 +30,7 @@ void process_gen(void *f_pgen){
 
 void create_process(){
 
-    struct process p;
+    process_t p;
 
     //srand(time(0));
     long pid = rand();

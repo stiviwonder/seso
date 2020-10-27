@@ -4,13 +4,20 @@ extern int tick;
 extern sem_t sem_timer;
 extern sem_t sem_pgen;
 extern sem_t sem_scheduler;
-extern struct process{
+
+typedef struct process{
     long pid;
-};
-struct process_q{
+}process_t;
+
+typedef struct process_q{
     struct process* data;
     short size;
-};
+}process_q_t;
 
-extern struct process_q p_queue;
+typedef struct cpu{
+    int core;
+    int thread;
+}cpu_t;
+
+extern process_q_t p_queue;
 
