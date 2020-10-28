@@ -14,9 +14,13 @@ typedef struct process_q{
     short size;
 }process_q_t;
 
+struct core{
+    int th_kop;
+    pthread_t th;
+}
+
 typedef struct cpu{
-    int core;
-    int thread;
+    struct core* core;
 }cpu_t;
 
 extern process_q_t p_queue;
