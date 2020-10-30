@@ -60,9 +60,26 @@ node_t* delete(node_t* root, int x){
 
 	// One child
 	else if (root->left == NULL || root->right == NULL){
+	    node_t* temp;
+	    if (root->left == NULL)
+		temp = root->right;
+	    else
+		temp = root->left;
+	    free(root);
+	    return temp;
+	}
+
+	// Two children
+	else{
+	    node_t* temp = find_minimum(root->right);
+	    root-vruntime = temp->vruntime;
+	    root->process = temp->process;
+	    root->dadi = root->dadi;
+	    root->right = delete(root->right, temp->vruntime);
 	}
 
     }
+    return root;
 
 
 }
