@@ -17,7 +17,7 @@ typedef struct process_q{
 struct core{
     int th_kop;
     pthread_t th;
-}
+};
 
 typedef struct cpu{
     struct core* core;
@@ -25,3 +25,11 @@ typedef struct cpu{
 
 extern process_q_t p_queue;
 
+typedef struct node{
+    int vruntime;
+    struct process p;
+    node_t* dadi;
+    node_t* right;
+    node_t* left;
+    
+}node_t;

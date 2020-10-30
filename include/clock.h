@@ -1,1 +1,1 @@
-void erlojua(void *f_clock);
+void* erlojua(void *f_clock);

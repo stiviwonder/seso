@@ -1,4 +1,4 @@
-void scheduler(void *tid);
+void* scheduler(void *tid);
 
 
 

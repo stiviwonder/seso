@@ -5,7 +5,7 @@
 
 sem_t sem_scheduler;
 
-void scheduler(void *tid){
+void* scheduler(void *tid){
     while(1){
         sem_wait(&sem_scheduler);
         printf("[SCHEDULER] Scheduleando :)\n");

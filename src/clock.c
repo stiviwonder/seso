@@ -10,7 +10,7 @@ sem_t sem_timer;
 sem_t sem_pgen;
 sem_t sem_scheduler;
 
-void erlojua(void *f_clock){
+void* erlojua(void *f_clock){
     float f = *((float*)f_clock);
     float t = 1.0/f;
     t *= 1000000;

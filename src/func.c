@@ -19,20 +19,20 @@ void create_threads(float f_clock, int f_timer, int f_pgen){
         exit(-1);
     }
 
-    err = pthread_create(&threads[1], NULL, timer, (void *)f_timer); 
+    err = pthread_create(&threads[1], NULL, timer, (void *)&f_timer); 
     if (err){
         fprintf(stderr, "(ERR) Unable to create threads, %d\n", err);
         exit(-1);
     }
 
-    err = pthread_create(&threads[2], NULL, process_gen, (void *)f_pgen); 
+    err = pthread_create(&threads[2], NULL, process_gen, (void *)&f_pgen); 
     if (err){
         fprintf(stderr, "(ERR) Unable to create threads, %d\n", err);
         exit(-1);
     }
 
     i=3;
-    err = pthread_create(&threads[3], NULL, scheduler, (void*)i); 
+    err = pthread_create(&threads[3], NULL, scheduler, (void*)&i); 
     if (err){
         fprintf(stderr, "(ERR) Unable to create threads, %d\n", err);
         exit(-1);

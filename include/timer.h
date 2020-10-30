@@ -1,2 +1,2 @@
-void timer(void *f_timer);
+void* timer(void *f_timer);
 
