@@ -17,9 +17,9 @@ void* erlojua(void *f_clock){
     tick = 0;
     while(1){
         if(tick % 2 == 0)
-            printf("[CLOCK] /_(~_~)_/ tick: %d\n", tick);
+            printf("[CLOCK] /_( ¬‿¬)_/ tick: %d\n", tick);
         else
-            printf("[CLOCK] \\_(~_~)_\\ tick: %d\n", tick);
+            printf("[CLOCK] \\_(¬‿¬ )_\\ tick: %d\n", tick);
         tick++;
         usleep((int)t);
         sem_post(&sem_timer);
