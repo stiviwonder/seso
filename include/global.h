@@ -27,9 +27,12 @@ extern process_q_t p_queue;
 
 typedef struct node{
     int vruntime;
-    struct process p;
-    node_t* dadi;
-    node_t* right;
-    node_t* left;
+    struct process process;
+    struct node* dadi;
+    struct node* right;
+    struct node* left;
     
 }node_t;
+
+extern node_t* root;
+extern volatile node_t* leftmost;
