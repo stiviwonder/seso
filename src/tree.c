@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "global.h"
+#include "../include/global.h"
 
 volatile node_t* leftmost;
 
@@ -34,8 +34,8 @@ node_t* insert(node_t* root, int x, struct process p, node_t* dad){
     // Busca el lugar para insert
     if (root == NULL){
 	node_t* n = new_node(x, p, dad);
-	if (x < leftmost->vruntime)
-	    leftmost = n;
+//	if (x < leftmost->vruntime)
+//	    leftmost = n;
 	return n;
     }
     else if (x > root->vruntime)
@@ -51,17 +51,17 @@ node_t* delete(node_t* root, int x){
 
     // Busca el nodo que deletear
     if (root == NULL)
-	return NULL;
+	return root;
     if (x > root->vruntime)
        root->right = delete(root->right, x);
     else if (x < root->vruntime)
-       root->left = delete(root->right, x);
+       root->left = delete(root->left, x);
     else{
 
 	// No children
 	if (root->left == NULL && root->right == NULL){
-	    if (root->vruntime == leftmost->vruntime)
-		leftmost = root->dadi
+//	    if (root->vruntime == leftmost->vruntime)
+//		leftmost = root->dadi;
 	    free(root);
 	    return NULL;
 	}
@@ -71,8 +71,8 @@ node_t* delete(node_t* root, int x){
 	    node_t* temp;
 	    if (root->left == NULL){
 		temp = root->right;
-		if (root->vruntime == leftmost->vruntime)
-		    leftmost = temp;
+//		if (root->vruntime == leftmost->vruntime)
+//		    leftmost = temp;
 	    }
 	    else
 		temp = root->left;
@@ -85,9 +85,10 @@ node_t* delete(node_t* root, int x){
 	    node_t* temp = find_minimum(root->right);
 	    root->vruntime = temp->vruntime;
 	    root->process = temp->process;
-	    root->dadi = root->dadi;
+	    root->dadi = temp->dadi;
 	    root->right = delete(root->right, temp->vruntime);
 	}
+
 
     }
     return root;

@@ -13,7 +13,7 @@ void* timer(void *f_timer){
         sem_wait(&sem_timer);
         p_tick--;
         if (p_tick == 0){
-            printf("[TIMER] es la hora del scheduler :) !!\n");
+//            printf("[TIMER] es la hora del scheduler :) !!\n");
             sem_post(&sem_scheduler);
             p_tick = *(int*) f_timer;
         }
