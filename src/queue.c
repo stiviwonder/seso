@@ -3,15 +3,6 @@
 #include "../include/global.h"
 #include "../include/queue.h"
 
-// A lo mejor moverlo a global ????
-extern struct queue{
-    struct process* queue;
-    int front;
-    int rear;
-    int size;
-    int max_size;
-}queue_t;
-
 struct queue new_queue(int max_size){
     struct queue q;
     q.queue = malloc(max_size*sizeof(queue_t));

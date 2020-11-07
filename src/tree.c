@@ -34,8 +34,8 @@ node_t* insert(node_t* root, int x, struct process p, node_t* dad){
     // Busca el lugar para insert
     if (root == NULL){
 	node_t* n = new_node(x, p, dad);
-//	if (x < leftmost->vruntime)
-//	    leftmost = n;
+	if (x < leftmost->vruntime)
+	    leftmost = n;
 	return n;
     }
     else if (x > root->vruntime)
@@ -61,7 +61,7 @@ node_t* delete(node_t* root, int x){
 	// No children
 	if (root->left == NULL && root->right == NULL){
 //	    if (root->vruntime == leftmost->vruntime)
-//		leftmost = root->dadi;
+//		leftmost = find_minimum(root->dadi);
 	    free(root);
 	    return NULL;
 	}
@@ -71,11 +71,13 @@ node_t* delete(node_t* root, int x){
 	    node_t* temp;
 	    if (root->left == NULL){
 		temp = root->right;
-//		if (root->vruntime == leftmost->vruntime)
-//		    leftmost = temp;
 	    }
 	    else
 		temp = root->left;
+
+//	    if (root->vruntime == leftmost->vruntime)
+//		leftmost = find_minimum(root->dadi);
+
 	    free(root);
 	    return temp;
 	}

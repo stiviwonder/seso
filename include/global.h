@@ -1,31 +1,31 @@
 #include <semaphore.h>
 
-extern int tick;
-extern sem_t sem_timer;
-extern sem_t sem_pgen;
-extern sem_t sem_scheduler;
-
-extern pthread_mutex_t lock;
+//====== STRUCT DEFINITIONS ======\\
 
 typedef struct process{
     long pid;
 }process_t;
 
-typedef struct process_q{
-    struct process* data;
-    short size;
-}process_q_t;
+
+typedef struct queue{
+    struct process* queue;
+    int front;
+    int rear;
+    int size;
+    int max_size;
+}queue_t;
 
 struct core{
+    int id;
     int th_kop;
-    pthread_t th;
+    //pthread_t th;
+    queue_t queue;
 };
 
 typedef struct cpu{
     struct core* core;
 }cpu_t;
 
-extern process_q_t p_queue;
 
 typedef struct node{
     int vruntime;
@@ -36,5 +36,17 @@ typedef struct node{
     
 }node_t;
 
+//====== GLOBAL VARIABLES ======\\
+
+extern int tick; //esta no creo que haga falta global
+
+extern sem_t sem_timer;
+extern sem_t sem_pgen;
+extern sem_t sem_scheduler;
+
+extern pthread_mutex_t lock;
+
 extern node_t* root;
 extern volatile node_t* leftmost;
+
+extern cpu_t cpu;

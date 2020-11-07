@@ -7,9 +7,8 @@
 sem_t sem_scheduler;
 volatile node_t* leftmost;
 node_t* root;
-node_t* is_it;
 
-node_t* pruses;
+volatile node_t* run_p;
 
 pthread_mutex_t lock;
 
@@ -18,24 +17,13 @@ void* scheduler(void *tid){
         sem_wait(&sem_scheduler);
         printf("[SCHEDULER] Scheduleando :)\n");
 	
-	//is_it = find_minimum(root);
-
-        //printf("[SCHEDULER] BEFORE DELETE is it = %d :)\n", is_it->vruntime);
-        //printf("[SCHEDULER] BEFORE DELETE leftmost = %d :)\n", leftmost->vruntime);
-
-
 	//pthread_mutex_lock(&lock);
-	//pruses = delete(root, leftmost->vruntime);
+	run_p = leftmost;
+	root = delete(root, leftmost->vruntime);
 	//pthread_mutex_unlock(&lock);
-//
-        //printf("[SCHEDULER] BEFORE DELETE is it = %d :)\n", is_it->vruntime);
-        //printf("[SCHEDULER] BEFORE DELETE leftmost = %d :)\n", leftmost->vruntime);
+	leftmost = find_minimum(root);
 
 
-	//printf("\n");
-	//printf("[SCHEDULER] ");
-	//print_tree(root);
-	//printf("\n");
 
     }
 }
