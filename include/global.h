@@ -5,6 +5,8 @@ extern sem_t sem_timer;
 extern sem_t sem_pgen;
 extern sem_t sem_scheduler;
 
+extern pthread_mutex_t lock;
+
 typedef struct process{
     long pid;
 }process_t;
