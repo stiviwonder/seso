@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <semaphore.h>
 #include "../include/func.h"
 #include "../include/clock.h"
@@ -11,16 +12,17 @@
 node_t* root;
 volatile node_t* leftmost;
 cpu_t cpu;
-
 int main(int argc, char* argv[]){
 
     // Declare parameters
     float clock_f = 4;
     int timer_f = 10;
     int pgen_f = 5;
-    
+    int core_kop = 4;
+
     // Initialize cpu
-    cpu.cor
+    init_cpu(core_kop);
+
     sem_init(&sem_timer, 0, 0);
     sem_init(&sem_pgen, 0, 0);
     sem_init(&sem_scheduler, 0, 0);

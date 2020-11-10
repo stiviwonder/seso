@@ -6,7 +6,6 @@
 #include "../include/p_gen.h"
 #include "../include/tree.h"
 
-process_q_t p_queue;
 sem_t sem_pgen;
 node_t* root;
 volatile node_t* leftmost;
@@ -19,11 +18,13 @@ void* process_gen(void *f_pgen){
     process_t p;
 
     long pid = rand();
-    p.pid = pid;
-
     int vruntime = rand() % 250; // aleatorio el 250
 
-    root = new_node(vruntime, p, NULL);
+    p.pid = pid;
+    p.vruntime = vruntime;
+
+
+    root = new_node(p, NULL);
     leftmost = root;
 
     while(1){
@@ -36,7 +37,7 @@ void* process_gen(void *f_pgen){
 	    print_tree(root);
 	    printf("\n");
 
-            printf("[PGEN] leftmost: %d\n", leftmost->vruntime);
+            printf("[PGEN] leftmost: %d\n", leftmost->process.vruntime);
             p_tick = *(int*) f_pgen;
 
         }
@@ -48,9 +49,11 @@ void create_process(){
     process_t p;
 
     long pid = rand();
-    p.pid = pid;
-
     int vruntime = rand() % 250 + 1; // aleatorio el 250
+
+    p.pid = pid;
+    p.vruntime = vruntime;
+
     printf("[PGEN] new pruses: %d\n", vruntime);
 
 //    pthread_mutex_lock(&lock);

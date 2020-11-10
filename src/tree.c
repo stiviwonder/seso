@@ -4,11 +4,10 @@
 
 volatile node_t* leftmost;
 
-node_t* new_node(int vruntime, struct process p, node_t* dad){
+node_t* new_node(struct process p, node_t* dad){
     node_t* n;
     n = malloc(sizeof(node_t));
 
-    n->vruntime = vruntime;
     n->process = p;
     n->dadi = dad; // esto seguro que hay que hacer cpy o algo asi
     n->left = NULL;
@@ -33,12 +32,12 @@ node_t* insert(node_t* root, int x, struct process p, node_t* dad){
 
     // Busca el lugar para insert
     if (root == NULL){
-	node_t* n = new_node(x, p, dad);
-	if (x < leftmost->vruntime)
+	node_t* n = new_node(p, dad);
+	if (x < leftmost->process.vruntime)
 	    leftmost = n;
 	return n;
     }
-    else if (x > root->vruntime)
+    else if (x > root->process.vruntime)
        root->right = insert(root->right, x, p, root);
     else 
 	root->left = insert(root->left, x, p, root);
@@ -52,9 +51,9 @@ node_t* delete(node_t* root, int x){
     // Busca el nodo que deletear
     if (root == NULL)
 	return root;
-    if (x > root->vruntime)
+    if (x > root->process.vruntime)
        root->right = delete(root->right, x);
-    else if (x < root->vruntime)
+    else if (x < root->process.vruntime)
        root->left = delete(root->left, x);
     else{
 
@@ -85,10 +84,9 @@ node_t* delete(node_t* root, int x){
 	// Two children
 	else{
 	    node_t* temp = find_minimum(root->right);
-	    root->vruntime = temp->vruntime;
 	    root->process = temp->process;
 	    root->dadi = temp->dadi;
-	    root->right = delete(root->right, temp->vruntime);
+	    root->right = delete(root->right, temp->process.vruntime);
 	}
 
 
@@ -101,7 +99,7 @@ node_t* delete(node_t* root, int x){
 void print_tree(node_t* root){
     if (root != NULL){
 	print_tree(root->left);
-	printf(" %d ", root->vruntime);
+	printf(" %d ", root->process.vruntime);
 	print_tree(root->right);
     }
 }

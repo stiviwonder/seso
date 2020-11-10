@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include "func.h"
-#include "clock.h"
-#include "timer.h"
-#include "p_gen.h"
-#include "scheduler.h"
-#include "global.h"
+#include "../include/func.h"
+#include "../include/clock.h"
+#include "../include/timer.h"
+#include "../include/p_gen.h"
+#include "../include/scheduler.h"
+#include "../include/global.h"
 
 pthread_mutex_t lock;
+cpu_t cpu;
 
 void create_threads(float f_clock, int f_timer, int f_pgen){
     int i, err;
@@ -47,4 +48,16 @@ void create_threads(float f_clock, int f_timer, int f_pgen){
     pthread_mutex_destroy(&lock);
     for(i=0; i<4; i++)
         pthread_join(threads[i], NULL);
+}
+
+void init_cpu(int core_kop){
+    int i;
+
+    cpu.core = malloc(core_kop*sizeof(struct cpu));
+    cpu.core_kop = core_kop;
+
+	for (i=0; i<core_kop;i++){
+	    cpu.core[i].id = i;
+	    cpu.core[i].executed = 0;
+	}
 }
