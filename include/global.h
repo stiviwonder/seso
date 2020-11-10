@@ -4,6 +4,7 @@
 
 typedef struct process{
     long pid;
+    int vruntime;
 }process_t;
 
 
@@ -17,18 +18,18 @@ typedef struct queue{
 
 struct core{
     int id;
-    int th_kop;
-    //pthread_t th;
+    process_t execution;
+    int executed;
     queue_t queue;
 };
 
 typedef struct cpu{
     struct core* core;
+    int core_kop;
 }cpu_t;
 
 
 typedef struct node{
-    int vruntime;
     struct process process;
     struct node* dadi;
     struct node* right;
