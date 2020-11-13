@@ -14,21 +14,32 @@ pthread_mutex_t lock;
 
 void* scheduler(void *tid){
     int i = 0;
+    int last_core = 0;
     while(1){
         sem_wait(&sem_scheduler);
-        printf("[SCHEDULER] Scheduleando :)\n");
+        printf("\n[SCHEDULER] Scheduleando :)\n");
 	
-	//pthread_mutex_lock(&lock);
-	if (cpu.core[i].executed == 1){
+	// busca uno libre y si no hay adios muy buenas
+	while(cpu.core[i].executing == 1 && i < last_core){
+	    i = (i+1) % cpu.core_kop;
+	}
+
+	if (cpu.core[i].executing == 0){
+
 	    run_p = leftmost->process;
+
+	    pthread_mutex_lock(&lock);
 	    root = delete(root, leftmost->process.vruntime);
-	    //pthread_mutex_unlock(&lock);
 	    leftmost = find_minimum(root);
 
 	    cpu.core[i].execution = run_p;
-	}
+	    cpu.core[i].executing = 1;
+	    pthread_mutex_unlock(&lock);
 
-	i += 1 % cpu.core_kop;
+	    last_core = i;
+	    i = (i+1) % cpu.core_kop;
+
+	}
 
     }
 }

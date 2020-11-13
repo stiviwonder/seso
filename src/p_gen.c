@@ -12,6 +12,7 @@ volatile node_t* leftmost;
 pthread_mutex_t lock;
 
 void* process_gen(void *f_pgen){
+
     int p_tick = *(int*) f_pgen;
 
     // crear el primer proceso para iniciar el arbol
@@ -33,12 +34,13 @@ void* process_gen(void *f_pgen){
         p_tick--;
         if (p_tick == 0){
             create_process();
-            printf("[PGEN] ");
-	    print_tree(root);
-	    printf("\n");
+            //printf("[PGEN] ");
+	    //print_tree(root);
+	    //printf("\n");
 
-            printf("[PGEN] leftmost: %d\n", leftmost->process.vruntime);
+   //         printf("[PGEN] leftmost: %d\n", leftmost->process.vruntime);
             p_tick = *(int*) f_pgen;
+
 
         }
     }
@@ -50,15 +52,17 @@ void create_process(){
 
     long pid = rand();
     int vruntime = rand() % 250 + 1; // aleatorio el 250
+    int time = vruntime + ((rand()%10)-5);
 
     p.pid = pid;
     p.vruntime = vruntime;
+    p.time = time;
+    p.exec_time = 0;
 
-    printf("[PGEN] new pruses: %d\n", vruntime);
 
-//    pthread_mutex_lock(&lock);
-    insert(root, vruntime, p , root);
-//    pthread_mutex_unlock(&lock);
+    pthread_mutex_lock(&lock);
+    insert(root, p , root);
+    pthread_mutex_unlock(&lock);
 
 
 

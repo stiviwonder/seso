@@ -15,13 +15,40 @@ cpu_t cpu;
 int main(int argc, char* argv[]){
 
     // Declare parameters
-    float clock_f = 4;
-    int timer_f = 10;
-    int pgen_f = 5;
-    int core_kop = 4;
+    float clock_f;
+    int timer_f;
+    int pgen_f;
+    int core_kop;
+
+    printf("\n");
+    printf(" $$$$$$$\\  $$$$$$\\   $$$$$$$\\  $$$$$$\\\n");  
+    printf("$$  _____|$$  __$$\\ $$  _____|$$  __$$\\\n");
+    printf(" \\$$$$$$\\ $$$$$$$$ |\\$$$$$$\\  $$ /  $$ |\n");
+    printf("  \\____$$\\$$   ____| \\____$$\\ $$ |  $$ |\n");
+    printf("$$$$$$$  |\\$$$$$$$\\ $$$$$$$  |\\$$$$$$  |\n");
+    printf("\\_______/  \\_______|\\_______/  \\______/\n");
+    printf("\n");
+
+    // Ask user for parameters
+    printf("=================================================\n");
+    printf("\nSelect clock rate (MHz): ");
+    scanf("%f", &clock_f);
+    printf("Select scheduler action rate (clock ticks): ");
+    scanf("%d", &timer_f);
+    printf("Select process generation rate (clock ticks): ");
+    scanf("%d", &pgen_f);
+    printf("Select number of cores: ");
+    scanf("%d", &core_kop);
 
     // Initialize cpu
+    printf("\n-------------------------------------------------\n");
     init_cpu(core_kop);
+    printf("-------------------------------------------------\n");
+
+//    printf("=================================================\n");
+//    for (i=0; i<cpu.core_kop; i++)
+//	printf("core%d initialized\n",cpu.core[i].id);
+//    printf("=================================================\n");
 
     sem_init(&sem_timer, 0, 0);
     sem_init(&sem_pgen, 0, 0);

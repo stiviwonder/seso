@@ -53,11 +53,12 @@ void create_threads(float f_clock, int f_timer, int f_pgen){
 void init_cpu(int core_kop){
     int i;
 
-    cpu.core = malloc(core_kop*sizeof(struct cpu));
+    cpu.core = malloc(core_kop*sizeof(struct core));
     cpu.core_kop = core_kop;
 
 	for (i=0; i<core_kop;i++){
 	    cpu.core[i].id = i;
-	    cpu.core[i].executed = 0;
+	    cpu.core[i].executing = 0;
+	    printf("core%d initialized\n", cpu.core[i].id);
 	}
 }

@@ -30,6 +30,7 @@ node_t* find_minimum(node_t* root){
  */
 node_t* insert(node_t* root, int x, struct process p, node_t* dad){
 
+    x = p.vruntime;
     // Busca el lugar para insert
     if (root == NULL){
 	node_t* n = new_node(p, dad);
