@@ -1,10 +1,13 @@
 #include <semaphore.h>
 
-//====== STRUCT DEFINITIONS ======\\
+
+/*====== STRUCT DEFINITIONS ======*/
 
 typedef struct process{
     long pid;
     int vruntime;
+    int time;
+    int exec_time;
 }process_t;
 
 
@@ -19,8 +22,7 @@ typedef struct queue{
 struct core{
     int id;
     process_t execution;
-    int executed;
-    queue_t queue;
+    int executing;
 };
 
 typedef struct cpu{
@@ -37,7 +39,7 @@ typedef struct node{
     
 }node_t;
 
-//====== GLOBAL VARIABLES ======\\
+/*====== GLOBAL VARIABLES ======*/
 
 extern int tick; //esta no creo que haga falta global
 
@@ -50,4 +52,7 @@ extern pthread_mutex_t lock;
 extern node_t* root;
 extern volatile node_t* leftmost;
 
-extern cpu_t cpu;
+extern struct cpu cpu;
+
+/*====== DEFINES ======*/
+#define QUANTUM 50
