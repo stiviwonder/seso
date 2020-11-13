@@ -4,7 +4,7 @@ src_files = lmake_find("src/*c");
 link_files = lmake_find("bin/*.o");
 function build()
     lmake_set_compiler("/bin/gcc")
-    lmake_set_compiler_flags("-pthread -Wall -Iinclude")
+    lmake_set_compiler_flags("-pthread -Wall -Iinclude -DDEBUG")
     lmake_set_compiler_out("build/%.o")
     lmake_compile("src/main.c src/func.c src/clock.c src/timer.c src/p_gen.c src/scheduler.c src/tree.c src/queue.c")
     lmake_set_linker("/bin/gcc")
