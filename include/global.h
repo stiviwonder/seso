@@ -10,15 +10,6 @@ typedef struct process{
     int exec_time;
 }process_t;
 
-
-typedef struct queue{
-    struct process* queue;
-    int front;
-    int rear;
-    int size;
-    int max_size;
-}queue_t;
-
 struct core{
     int id;
     process_t execution;
@@ -33,7 +24,6 @@ typedef struct cpu{
 
 typedef struct node{
     struct process process;
-    struct node* dadi;
     struct node* right;
     struct node* left;
     
@@ -41,7 +31,7 @@ typedef struct node{
 
 /*====== GLOBAL VARIABLES ======*/
 
-extern int tick; //esta no creo que haga falta global
+extern volatile int num_process;
 
 extern sem_t sem_timer;
 extern sem_t sem_pgen;
@@ -55,4 +45,10 @@ extern volatile node_t* leftmost;
 extern struct cpu cpu;
 
 /*====== DEFINES ======*/
-#define QUANTUM 50
+#define QUANTUM 30
+
+#ifdef DEBUG
+    #define DEBUG_WRITE(x, ...) printf(x, __VA_ARGS__)
+#else
+    #define DEBUG_WRITE(x, ...)
+#endif // DEBUG
