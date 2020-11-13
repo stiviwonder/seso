@@ -9,9 +9,14 @@
 #include "../include/global.h"
 #include "../include/tree.h"
 
+/*====== GLOBAL VARIABLES ======*/
+
 node_t* root;
 volatile node_t* leftmost;
 cpu_t cpu;
+
+/*====== MAIN ======*/
+
 int main(int argc, char* argv[]){
 
     // Declare parameters
@@ -20,13 +25,16 @@ int main(int argc, char* argv[]){
     int pgen_f;
     int core_kop;
 
+    // Cool banner 
     printf("\n");
+    printf("\033[1;31m");   // color red
     printf(" $$$$$$$\\  $$$$$$\\   $$$$$$$\\  $$$$$$\\\n");  
     printf("$$  _____|$$  __$$\\ $$  _____|$$  __$$\\\n");
     printf(" \\$$$$$$\\ $$$$$$$$ |\\$$$$$$\\  $$ /  $$ |\n");
     printf("  \\____$$\\$$   ____| \\____$$\\ $$ |  $$ |\n");
     printf("$$$$$$$  |\\$$$$$$$\\ $$$$$$$  |\\$$$$$$  |\n");
     printf("\\_______/  \\_______|\\_______/  \\______/\n");
+    printf("\033[0m");
     printf("\n");
 
     // Ask user for parameters
@@ -41,19 +49,17 @@ int main(int argc, char* argv[]){
     scanf("%d", &core_kop);
 
     // Initialize cpu
-    printf("\n-------------------------------------------------\n");
     init_cpu(core_kop);
-    printf("-------------------------------------------------\n");
 
-//    printf("=================================================\n");
-//    for (i=0; i<cpu.core_kop; i++)
-//	printf("core%d initialized\n",cpu.core[i].id);
-//    printf("=================================================\n");
-
+    // Semaforo guztiak hasieratu
     sem_init(&sem_timer, 0, 0);
     sem_init(&sem_pgen, 0, 0);
     sem_init(&sem_scheduler, 0, 0);
+
+    // Simulazioa hasi
     create_threads(clock_f, timer_f, pgen_f);
+
+    // Semaforoak amaitu
     sem_destroy(&sem_timer);
     sem_destroy(&sem_pgen);
     sem_destroy(&sem_scheduler);

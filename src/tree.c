@@ -2,14 +2,17 @@
 #include <stdlib.h>
 #include "../include/global.h"
 
+/*====== GLOBAL VARIABLES ======*/
+
 volatile node_t* leftmost;
 
-node_t* new_node(struct process p, node_t* dad){
+/*====== FUNCTION IMPLEMENTATIONS ======*/
+
+node_t* new_node(struct process p){
     node_t* n;
     n = malloc(sizeof(node_t));
 
     n->process = p;
-    n->dadi = dad; // esto seguro que hay que hacer cpy o algo asi
     n->left = NULL;
     n->right = NULL;
 
@@ -19,29 +22,32 @@ node_t* new_node(struct process p, node_t* dad){
 node_t* find_minimum(node_t* root){
     if (root == NULL)
 	return NULL;
+
     // El nodo minimo no tendra nada en la left.
     else if (root->left != NULL)
 	return find_minimum(root->left);
     return root;
 }
 
-/**
- * TODO: actualizar el leftmost cuando inserte uno mas pequeño
- */
-node_t* insert(node_t* root, int x, struct process p, node_t* dad){
+node_t* insert(node_t* root, struct process p){
 
-    x = p.vruntime;
-    // Busca el lugar para insert
+    int x = p.vruntime;
+
+    // Zuhaitzan prozesua sartu
     if (root == NULL){
-	node_t* n = new_node(p, dad);
+	node_t* n = new_node(p);
 	if (x < leftmost->process.vruntime)
 	    leftmost = n;
 	return n;
     }
+
+    // vruntime handiagoa bada eskubian lekua bilatu
     else if (x > root->process.vruntime)
-       root->right = insert(root->right, x, p, root);
+       root->right = insert(root->right, p);
+
+    // vruntime txikiagoa bada ezkerrean lekua bilatu
     else 
-	root->left = insert(root->left, x, p, root);
+	root->left = insert(root->left, p);
     return root;
 }
 /**
@@ -60,8 +66,6 @@ node_t* delete(node_t* root, int x){
 
 	// No children
 	if (root->left == NULL && root->right == NULL){
-//	    if (root->vruntime == leftmost->vruntime)
-//		leftmost = find_minimum(root->dadi);
 	    free(root);
 	    return NULL;
 	}
@@ -69,14 +73,12 @@ node_t* delete(node_t* root, int x){
 	// One child
 	else if (root->left == NULL || root->right == NULL){
 	    node_t* temp;
+
 	    if (root->left == NULL){
 		temp = root->right;
 	    }
 	    else
 		temp = root->left;
-
-//	    if (root->vruntime == leftmost->vruntime)
-//		leftmost = find_minimum(root->dadi);
 
 	    free(root);
 	    return temp;
@@ -86,15 +88,10 @@ node_t* delete(node_t* root, int x){
 	else{
 	    node_t* temp = find_minimum(root->right);
 	    root->process = temp->process;
-	    root->dadi = temp->dadi;
 	    root->right = delete(root->right, temp->process.vruntime);
 	}
-
-
     }
     return root;
-
-
 }
 
 void print_tree(node_t* root){
