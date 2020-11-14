@@ -1,5 +1,5 @@
 # SESO
-### Description
+## Description
 This project is a full kernel simulator. It simulates how will behave the implemented kernel in diferent systems by changing the clock rate, the number of cores of the cpu ...
 
 It's divided in 5 parts,
