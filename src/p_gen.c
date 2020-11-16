@@ -16,6 +16,23 @@ volatile int num_process;
 
 /*====== FUNCTION IMPLEMENTATIONS ======*/
 
+process_t create_process(){
+
+    process_t p;
+
+    long pid = rand();			    // ID aleatoria sortu
+    int vruntime = rand() % 250 + 1;	    // virtual runtime aleatorioa sortu 
+    int time = vruntime + ((rand()%10)-5);  // Exekuzio denbora sortu, vruntime-en inguruan
+
+    // Prozesua hasieratu
+    p.pid = pid;
+    p.vruntime = vruntime;
+    p.time = time;
+    p.exec_time = 0;
+
+    return p;
+}
+
 void* process_gen(void *f_pgen){
     srand(time(0));
 
@@ -24,15 +41,8 @@ void* process_gen(void *f_pgen){
     // Hasieratze prozesua sortu zuhaitza hasieratzeko
     process_t p;
 
-    long pid = rand();
-    int vruntime = rand() % 250; // aleatorio el 250
-    int time = vruntime + ((rand()%10)-5);
 
-    p.pid = pid;
-    p.vruntime = vruntime;
-    p.time = time;
-    p.exec_time = 0;
-
+    p = create_process();
 
     root = new_node(p);
     leftmost = root;
@@ -48,7 +58,13 @@ void* process_gen(void *f_pgen){
         if (p_tick == 0){
 	    
 	    // Prozesua sortu
-            create_process();
+            p = create_process();
+
+	    // Zuhaitzan sartu
+	    pthread_mutex_lock(&lock);
+	    insert(root, p);
+	    pthread_mutex_unlock(&lock);
+
 	    num_process++;
 
 	    DEBUG_WRITE("[PGEN] process created, num_process = %d\n", num_process);
@@ -59,22 +75,3 @@ void* process_gen(void *f_pgen){
     }
 }
 
-void create_process(){
-
-    process_t p;
-
-    long pid = rand();			    // ID aleatoria sortu
-    int vruntime = rand() % 250 + 1;	    // virtual runtime aleatorioa sortu 
-    int time = vruntime + ((rand()%10)-5);  // Exekuzio denbora sortu, vruntime-en inguruan
-
-    // Prozesua hasieratu
-    p.pid = pid;
-    p.vruntime = vruntime;
-    p.time = time;
-    p.exec_time = 0;
-
-    // Zuhaitzan sartu
-    pthread_mutex_lock(&lock);
-    insert(root, p);
-    pthread_mutex_unlock(&lock);
-}
