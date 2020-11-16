@@ -1,3 +1,5 @@
+#ifndef global_h
+#define global_h
 #include <semaphore.h>
 
 
@@ -48,7 +50,8 @@ extern struct cpu cpu;
 #define QUANTUM 30
 
 #ifdef DEBUG
-    #define DEBUG_WRITE(x, ...) printf(x, __VA_ARGS__)
+    #define DEBUG_WRITE(...) printf(__VA_ARGS__)
 #else
-    #define DEBUG_WRITE(x, ...)
+    #define DEBUG_WRITE(...)
 #endif // DEBUG
+#endif //global
