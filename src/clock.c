@@ -26,25 +26,26 @@ void execute(struct cpu cpu, int t){
 	// Uneko core-a zerbait exekutatzen ari bada bere prozesuaren egoera eguneratzen du
 	if (cpu.core[i].executing == 1){
 
-	    DEBUG_WRITE("[CLOCK] core%d: execution time: %d\n", cpu.core[i].id, cpu.core[i].execution.exec_time);
+	    DEBUG_WRITE("[CLOCK] core%d: execution time: %d\n", cpu.core[i].id, cpu.core[i].exec_time);
 
 	    // Core-aren prozesua amaitu badu QUANTUM-a agortu gabe 
-	    if (cpu.core[i].execution.time <= 0 && cpu.core[i].execution.exec_time < QUANTUM){
+	    if (cpu.core[i].execution.time <= 0 && cpu.core[i].exec_time < QUANTUM){
 		pthread_mutex_lock(&lock);
 		
 		// Core-a askatzen du
 		cpu.core[i].executing = 0; 
+		cpu.core[i].exec_time = 0;	
 		pthread_mutex_unlock(&lock);
 		DEBUG_WRITE("[CLOCK] Process finished\n");
 	    }
 
 	    // Core-aren prozesua QUANTUM-en denbora agortzen bada
-	    else if (cpu.core[i].execution.exec_time >= QUANTUM){
+	    else if (cpu.core[i].exec_time >= QUANTUM){
 		pthread_mutex_lock(&lock);
 		
 		// "Lehentasuna" jaitsi eta core-ko exekuzio denbora berbiarazi
 		cpu.core[i].execution.vruntime += 10;	
-		cpu.core[i].execution.exec_time = 0;	
+		cpu.core[i].exec_time = 0;	
 
 		// Prozesua zuhaitzan berriro sartzen da
 		insert(root, cpu.core[i].execution);
@@ -60,7 +61,7 @@ void execute(struct cpu cpu, int t){
 	    // Exekuzio denborak eguneratzen dira
 	    else{
 		cpu.core[i].execution.time -= t;
-		cpu.core[i].execution.exec_time += t;
+		cpu.core[i].exec_time += t;
 	    }
 	}
     }

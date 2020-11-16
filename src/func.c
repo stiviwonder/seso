@@ -76,6 +76,7 @@ void init_cpu(int core_kop){
     for (i=0; i<core_kop;i++){
 	cpu.core[i].id = i;
 	cpu.core[i].executing = 0;
+	cpu.core[i].exec_time = 0;
 	printf("| core%d initialized |\n", cpu.core[i].id);
     }
     printf("---------------------\n");

@@ -28,7 +28,6 @@ process_t create_process(){
     p.pid = pid;
     p.vruntime = vruntime;
     p.time = time;
-    p.exec_time = 0;
 
     return p;
 }
