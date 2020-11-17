@@ -8,11 +8,12 @@ volatile node_t* leftmost;
 
 /*====== FUNCTION IMPLEMENTATIONS ======*/
 
-node_t* new_node(struct process p){
+node_t* new_node(struct process p, mm_t mm){
     node_t* n;
     n = malloc(sizeof(node_t));
 
     n->process = p;
+    n->mem_m = mm;
     n->left = NULL;
     n->right = NULL;
 
@@ -35,7 +36,11 @@ node_t* insert(node_t* root, struct process p){
 
     // Zuhaitzan prozesua sartu
     if (root == NULL){
-	node_t* n = new_node(p);
+	mm_t mm;
+	mm.code = 0;
+	mm.data = 0;
+	mm.pgb = 0;
+	node_t* n = new_node(p, mm);
 	if (x < leftmost->process.vruntime)
 	    leftmost = n;
 	return n;

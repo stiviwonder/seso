@@ -4,7 +4,7 @@
 #include "../include/func.h"
 #include "../include/clock.h"
 #include "../include/timer.h"
-#include "../include/p_gen.h"
+#include "../include/loader.h"
 #include "../include/scheduler.h"
 #include "../include/global.h"
 
@@ -41,7 +41,7 @@ void create_threads(float f_clock, int f_timer, int f_pgen){
     }
 
     // Prozesu generatzaile haria hasieratu
-    err = pthread_create(&threads[2], NULL, process_gen, (void *)&f_pgen); 
+    err = pthread_create(&threads[2], NULL, loader, (void *)&f_pgen); 
     if (err){
         fprintf(stderr, "(ERR) Unable to create threads, %d\n", err);
         exit(-1);
