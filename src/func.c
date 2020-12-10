@@ -81,3 +81,7 @@ void init_cpu(int core_kop){
     }
     printf("---------------------\n");
 }
+
+int mmu(int vaddr){
+    return 0x0;
+}

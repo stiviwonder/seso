@@ -5,23 +5,6 @@
 
 /*====== STRUCT DEFINITIONS ======*/
 
-typedef struct process{
-    long pid;
-    int vruntime;
-    int time;
-}process_t;
-
-struct core{
-    int id;
-    process_t execution;
-    int executing;
-    int exec_time;
-};
-
-typedef struct cpu{
-    struct core* core;
-    int core_kop;
-}cpu_t;
 
 typedef struct mm{
     int pgb;	// Orri taularen helbide fisikoa
@@ -29,29 +12,34 @@ typedef struct mm{
     int data;	// Datuen helbide birtuala
 }mm_t;
 
+typedef struct process{
+    long pid;
+    int vruntime;
+    int time;
+    struct mm mem_man;
+}process_t;
+
+struct core{
+    int id;
+    process_t execution;
+    int executing;
+    int exec_time;
+
+    int pc;
+    int ir;
+    int ptbr;
+};
+
+typedef struct cpu{
+    struct core* core;
+    int core_kop;
+}cpu_t;
 
 typedef struct node{
     struct process process;
-    mm_t mem_m;
     struct node* right;
     struct node* left;
-    
 }node_t;
-
-typedef struct mmu{
-}mmu_t;
-
-typedef struct tlb{
-}tlb_t;
-
-typedef struct ptbr{
-}ptbr_t;
-
-typedef struct ir{
-}ir_t;
-
-typedef struct pc{
-}pc_t;
 
 /*====== GLOBAL VARIABLES ======*/
 
@@ -68,6 +56,7 @@ extern volatile node_t* leftmost;
 
 extern struct cpu cpu;
 
+extern int* mem_fisikoa;
 /*====== DEFINES ======*/
 #define QUANTUM 30
 

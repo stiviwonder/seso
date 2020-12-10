@@ -19,7 +19,11 @@ volatile int num_process;
 process_t create_process(){
 
     process_t p;
+    mm_t mm;
 
+    mm.code = 0x0;
+    mm.data = 0x0;
+    mm.pgb = 0x0;
     long pid = rand();			    // ID aleatoria sortu
     int vruntime = rand() % 250 + 1;	    // virtual runtime aleatorioa sortu 
     int time = vruntime + ((rand()%10)-5);  // Exekuzio denbora sortu, vruntime-en inguruan
@@ -28,6 +32,7 @@ process_t create_process(){
     p.pid = pid;
     p.vruntime = vruntime;
     p.time = time;
+    p.mem_man = mm;
 
     return p;
 }
@@ -42,8 +47,7 @@ void* loader(void *f_pgen){
 
 
     p = create_process();
-    mm_t mm;
-    root = new_node(p, mm);
+    root = new_node(p);
     leftmost = root;
     num_process = 0;
 

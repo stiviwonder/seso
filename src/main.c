@@ -9,11 +9,13 @@
 #include "../include/global.h"
 #include "../include/tree.h"
 
+
 /*====== GLOBAL VARIABLES ======*/
 
 node_t* root;
 volatile node_t* leftmost;
 cpu_t cpu;
+int* mem_fisikoa;
 
 /*====== MAIN ======*/
 
@@ -24,6 +26,7 @@ int main(int argc, char* argv[]){
     int timer_f;
     int pgen_f;
     int core_kop;
+    int mem_size = 30;
 
     // Cool banner 
     printf("\n");
@@ -50,6 +53,9 @@ int main(int argc, char* argv[]){
 
     // Initialize cpu
     init_cpu(core_kop);
+
+    // Initialize memori
+    mem_fisikoa = malloc(mem_size*sizeof(int));
 
     // Semaforo guztiak hasieratu
     sem_init(&sem_timer, 0, 0);
