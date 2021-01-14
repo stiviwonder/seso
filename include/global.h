@@ -5,7 +5,6 @@
 
 /*====== STRUCT DEFINITIONS ======*/
 
-
 typedef struct mm{
     int pgb;	// Orri taularen helbide fisikoa
     int code;	// Kodearen helbide birtuala
@@ -57,8 +56,17 @@ extern volatile node_t* leftmost;
 extern struct cpu cpu;
 
 extern int* mem_fisikoa;
+extern volatile int mem_addr;
+extern volatile int mem_p;
+
 /*====== DEFINES ======*/
+
 #define QUANTUM 30
+
+#define LD 7
+#define ST 7
+#define ADD 5
+#define EXIT 3
 
 #ifdef DEBUG
     #define DEBUG_WRITE(...) printf(__VA_ARGS__)

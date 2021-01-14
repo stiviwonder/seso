@@ -82,6 +82,33 @@ void init_cpu(int core_kop){
     printf("---------------------\n");
 }
 
-int mmu(int vaddr){
-    return 0x0;
+int mmu(int faddr, int vaddr){
+
+    return faddr + vaddr;
+}
+
+int* read_op(int bin){
+    int *command = malloc(5*sizeof(int));
+
+    command[0] = (bin >> 28) & 0x0F;
+    command[1] = (bin >> 24) & 0x0F;
+    command[2] = (bin >> 20) & 0x0F;
+    command[3] = (bin >> 16) & 0x0F;
+    command[4] = bin & 0x00FFFFFF;
+
+    switch (command[0]){
+	case 0: //ld
+	    printf(" [%08x] op: ld r%d, 0x%06x\n",bin, command[1], command[4]);
+	    break;
+	case 1: //st
+	    printf(" [%08x] op: st r%d, 0x%06x\n",bin, command[1], command[4]);
+	    break;
+	case 2: //add
+	    printf(" [%08x] op: add r%d, r%d, r%d\n",bin, command[1], command[2], command[3]);
+	    break;
+	case 15: //exit
+	    printf(" [%08x] op: exit\n",bin);
+	    break;
+    }
+    return command;
 }

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <semaphore.h>
+#include <math.h>
 #include "../include/func.h"
 #include "../include/clock.h"
 #include "../include/timer.h"
@@ -16,6 +17,8 @@ node_t* root;
 volatile node_t* leftmost;
 cpu_t cpu;
 int* mem_fisikoa;
+volatile int mem_addr;
+volatile int mem_p;
 
 /*====== MAIN ======*/
 
@@ -26,7 +29,7 @@ int main(int argc, char* argv[]){
     int timer_f;
     int pgen_f;
     int core_kop;
-    int mem_size = 30;
+    int mem_size = (int) pow(2,16);
 
     // Cool banner 
     printf("\n");
@@ -56,6 +59,8 @@ int main(int argc, char* argv[]){
 
     // Initialize memori
     mem_fisikoa = malloc(mem_size*sizeof(int));
+    mem_addr = 1000;
+    mem_p = 0;
 
     // Semaforo guztiak hasieratu
     sem_init(&sem_timer, 0, 0);

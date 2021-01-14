@@ -5,6 +5,7 @@
 #include <semaphore.h>
 #include "../include/global.h"
 #include "../include/tree.h"
+#include "../include/func.h"
 
 /*====== GLOBAL VARIABLES ======*/
 volatile int num_process;
@@ -12,6 +13,9 @@ sem_t sem_timer;
 sem_t sem_pgen;
 sem_t sem_scheduler;
 struct cpu cpu;
+int* mem_fisikoa;
+volatile int mem_addr;
+volatile int mem_p;
 
 node_t* root;
 
@@ -20,6 +24,9 @@ node_t* root;
 void execute(struct cpu cpu, int t){
     int i;
 
+    int *command = malloc(5*sizeof(int));
+    int data_addr;
+
     // Core guztiak begiratzen ditu 
     for (i=0; i<cpu.core_kop; i++){
 
@@ -27,6 +34,15 @@ void execute(struct cpu cpu, int t){
 	if (cpu.core[i].executing == 1){
 
 	    DEBUG_WRITE("[CLOCK] core%d: execution time: %d\n", cpu.core[i].id, cpu.core[i].exec_time);
+	    printf("\n\n");
+	    command = read_op(mem_fisikoa[cpu.core[i].execution.mem_man.pgb]);
+	    data_addr = mmu(cpu.core[i].execution.mem_man.pgb, command[4]);
+	    printf("\ncommand data[%08x]: %d", command[4], mem_fisikoa[data_addr]);
+	    printf("\n\n");
+
+	    // init of this => SCHEDULER JOB
+	    cpu.core[i].pc = cpu.core[i].execution.mem_man.pgb;
+	    cpu.core[i].ir = mem_fisikoa[data_addr];
 
 	    // Core-aren prozesua amaitu badu QUANTUM-a agortu gabe 
 	    if (cpu.core[i].execution.time <= 0 && cpu.core[i].exec_time < QUANTUM){
@@ -60,8 +76,8 @@ void execute(struct cpu cpu, int t){
 	    
 	    // Exekuzio denborak eguneratzen dira
 	    else{
-		cpu.core[i].execution.time -= t;
-		cpu.core[i].exec_time += t;
+		cpu.core[i].execution.time -= 1; // process time in cicles
+		cpu.core[i].exec_time += t;	 // core exec time in ms
 	    }
 	}
     }
