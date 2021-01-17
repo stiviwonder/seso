@@ -27,7 +27,7 @@ struct core{
     int exec_time;
 
     int pc; // execution address
-    int ir[3];
+    int ir[20];
     int ptbr;
 };
 
@@ -71,7 +71,7 @@ extern struct free_spaces *mem_free;
 extern volatile int free_count;
 /*====== DEFINES ======*/
 
-#define QUANTUM 30
+#define QUANTUM 30000
 
 #define LD 7
 #define ST 7

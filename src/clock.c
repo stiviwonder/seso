@@ -25,7 +25,8 @@ void execute(struct cpu cpu, int t){
     int i;
 
     int *command = malloc(5*sizeof(int));
-    int data_addr;
+    int data;
+    int start; //program start address
 
     // Core guztiak begiratzen ditu 
     for (i=0; i<cpu.core_kop; i++){
@@ -35,6 +36,8 @@ void execute(struct cpu cpu, int t){
 
 	    // proces the command for execution
 	    command = read_op(mem_fisikoa[cpu.core[i].pc]);
+	    start = mem_fisikoa[cpu.core[i].execution.mem_man.pgb];
+	    data = command[4];
 
 	    // Core-aren prozesua amaitu badu QUANTUM-a agortu gabe 
 	    if (command[0] == 15 && cpu.core[i].exec_time < QUANTUM){
@@ -45,7 +48,10 @@ void execute(struct cpu cpu, int t){
 		cpu.core[i].exec_time = 0;	
 		free_the_mem(cpu.core[i].ptbr, cpu.core[i].execution.size);
 		pthread_mutex_unlock(&lock);
+
+		DEBUG_WRITE("\033[1;31m");   // color red
 		DEBUG_WRITE("[CLOCK] Process finished\n");
+		DEBUG_WRITE("\033[0m");
 	    }
 
 	    // Core-aren prozesua QUANTUM-en denbora agortzen bada
@@ -64,7 +70,9 @@ void execute(struct cpu cpu, int t){
 		cpu.core[i].executing = 0;
 		pthread_mutex_unlock(&lock);
 
+		DEBUG_WRITE("\033[1;31m");   // color red
 		DEBUG_WRITE("[CLOCK] QUANTUM finished\n");
+		DEBUG_WRITE("\033[0m");
 	    }
 	    
 	    // Exekuzio denborak eguneratzen dira
@@ -74,27 +82,43 @@ void execute(struct cpu cpu, int t){
 			if (cpu.core[i].execution.time >= LD){
 			    cpu.core[i].pc += 4;
 			    cpu.core[i].execution.time = 0;
-			    DEBUG_WRITE("[CLOCK] LOAD finished :)\n");
+
+			    DEBUG_WRITE("\033[1;31m");   // color red
+			    DEBUG_WRITE("[CLOCK]CORE%d => ld r%d, %08x =>  %d\n",cpu.core[i].id, command[1], data, cpu.core[i].ir[command[1]]);
+			    DEBUG_WRITE("\033[0m");
 			}
 			else{
-			    cpu.core[i].ir[0] = mem_fisikoa[mmu(cpu.core[i].execution.mem_man.pgb, command[4])];
+			    cpu.core[i].ir[command[1]] = mem_fisikoa[mmu(start, data)]; // Ri <= xxxx
 			    cpu.core[i].execution.time ++;
-			    DEBUG_WRITE("[CLOCK] LOAD r%d %08x => ir0 = %d\n", command[1], cpu.core[i].ir[0]);
 			}
 			break;
 		    case 1: //st
 			if (cpu.core[i].execution.time >= ST){
 			    cpu.core[i].pc += 4;
 			    cpu.core[i].execution.time = 0;
-			    DEBUG_WRITE("[CLOCK] STORE finished :)\n");
+
+			    DEBUG_WRITE("\033[1;31m");   // color red
+			    DEBUG_WRITE("[CLOCK]CORE%d => st r%d, %08x =>  %d\n",cpu.core[i].id, command[1], data, cpu.core[i].ir[command[1]]);
+			    DEBUG_WRITE("\033[0m");
 			}
 			else{
-			    cpu.core[i].ir[0] = mem_fisikoa[mmu(cpu.core[i].execution.mem_man.pgb, command[4])];
+			    mem_fisikoa[mmu(start, data)] = cpu.core[i].ir[command[1]]; // Ri => xxxx
 			    cpu.core[i].execution.time ++;
-			    DEBUG_WRITE("[CLOCK] LOAD r%d %08x => ir0 = %d\n", command[1], cpu.core[i].ir[0]);
 			}
 			break;
 		    case 2: //add
+			if (cpu.core[i].execution.time >= ADD){
+			    cpu.core[i].pc += 4;
+			    cpu.core[i].execution.time = 0;
+
+			    DEBUG_WRITE("\033[1;31m");   // color red
+			    DEBUG_WRITE("[CLOCK]CORE%d => add r%d, r%d, r%d => %d = %d + %d\n", cpu.core[i].id, command[1], command[2], command[3], cpu.core[i].ir[command[1]], cpu.core[i].ir[command[2]], cpu.core[i].ir[command[3]]);
+			    DEBUG_WRITE("\033[0m");
+			}
+			else{
+			    cpu.core[i].ir[command[1]] = cpu.core[i].ir[command[2]] + cpu.core[i].ir[command[3]];
+			    cpu.core[i].execution.time ++;
+			}
 			break;
 		}
 		cpu.core[i].exec_time += t;	 // core exec time in ms

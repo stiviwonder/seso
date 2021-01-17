@@ -70,7 +70,7 @@ process_t create_process(char *filename){
     }
 
     mem_fisikoa[mem_p] = mem_addr;
-    mm.pgb = mem_p;
+    mm.pgb = mem_p; //process page index
     mem_p++;
 
     addr = mm.code;
@@ -166,7 +166,6 @@ void* loader(void *f_pgen){
 	    mem_addr = locate_space(p_size);
 
 	    if (mem_addr != -1){
-		DEBUG_WRITE("\n[LOADER] program%03d => %d size\n location: %06x mem freespace: %d\n", i, p_size, mem_addr, freespace);
 		p = create_process(file);
 		freespace -= p_size;
 
@@ -177,13 +176,18 @@ void* loader(void *f_pgen){
 
 		num_process++;
 
+		DEBUG_WRITE("\033[1;33m");   // color yellow
 		DEBUG_WRITE("[LOADER] process created, num_process = %d\n", num_process);
+		DEBUG_WRITE("\033[0m");
+
 
 		i = (i+1) % 50;
 		p_size = 0;
 	    }
 	    else{
+		DEBUG_WRITE("\033[1;33m");   // color yellow
 		DEBUG_WRITE("[LOADER] ERR: process not created. Not enough space\n");
+		DEBUG_WRITE("\033[0m");
 	    }
 	    // Tick-ak kontatzeko tick pribatua berbiarazi
             p_tick = *(int*) f_pgen;

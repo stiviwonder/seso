@@ -96,20 +96,20 @@ int* read_op(int bin){
     command[3] = (bin >> 16) & 0x0F; // r3
     command[4] = bin & 0x00FFFFFF;   // vaddr
 
-    switch (command[0]){
-	case 0: //ld
-	    printf(" [%08x] op: ld r%d, 0x%06x\n",bin, command[1], command[4]);
-	    break;
-	case 1: //st
-	    printf(" [%08x] op: st r%d, 0x%06x\n",bin, command[1], command[4]);
-	    break;
-	case 2: //add
-	    printf(" [%08x] op: add r%d, r%d, r%d\n",bin, command[1], command[2], command[3]);
-	    break;
-	case 15: //exit
-	    printf(" [%08x] op: exit\n",bin);
-	    break;
-    }
+    //switch (command[0]){
+    //    case 0: //ld
+    //        printf(" [%08x] op: ld r%d, 0x%06x\n",bin, command[1], command[4]);
+    //        break;
+    //    case 1: //st
+    //        printf(" [%08x] op: st r%d, 0x%06x\n",bin, command[1], command[4]);
+    //        break;
+    //    case 2: //add
+    //        printf(" [%08x] op: add r%d, r%d, r%d\n",bin, command[1], command[2], command[3]);
+    //        break;
+    //    case 15: //exit
+    //        printf(" [%08x] op: exit\n",bin);
+    //        break;
+    //}
     return command;
 }
 
