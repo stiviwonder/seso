@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <string.h>
 #include "../include/global.h"
+#include "../include/func.h"
 #include "../include/tree.h"
 
 /*====== GLOBAL VARIABLES ======*/
@@ -25,9 +27,8 @@ void* scheduler(void *tid){
 	
 	// Timer-arekin sinkronizazio semaforoa
         sem_wait(&sem_scheduler);
-	DEBUG_WRITE("\033[1;34m");   // color blue
-	DEBUG_WRITE("[SCHEDULER] scheduling ...\n");
-	DEBUG_WRITE("\033[0m");
+	// color blue
+	DEBUG_WRITE("\033[1;34m[SCHEDULER] scheduling ...\033[0m\n");
 
 	if (num_process >= 1){
 
@@ -48,18 +49,20 @@ void* scheduler(void *tid){
 		leftmost = find_minimum(root);
 		num_process--;
 		
-		DEBUG_WRITE("\033[1;34m");   // color blue
-		DEBUG_WRITE("[SCHEDULER] num_process = %d\n", num_process);
-		DEBUG_WRITE("\033[0m");
+		// color blue
+		DEBUG_WRITE("\033[1;34m[SCHEDULER] num_process = %d\033[0m\n", num_process);
 
 		// Core-an prozesua exekutatzen jarri
 		cpu.core[i].execution = run_p;
 		cpu.core[i].executing = 1;
 		cpu.core[i].ptbr = run_p.mem_man.pgb; // addres of the program page 
-		cpu.core[i].pc = mem_fisikoa[run_p.mem_man.pgb]; //addres of the first command
+		//cpu.core[i].pc = mem_fisikoa[run_p.mem_man.pgb]; //addres of the first command
+		cpu.core[i].pc = run_p.pc; //addres of the command
+		memcpy(cpu.core[i].ir, run_p.ir, 20*sizeof(int));
 
-		DEBUG_WRITE("\033[1;34m");   // color blue
-		DEBUG_WRITE("[SCHEDULER] core%d: execution time: %d\n", cpu.core[i].id, cpu.core[i].exec_time);
+		//DEBUG_WRITE("[SCHEDULER] core%d: execution time: %d\n", cpu.core[i].id, cpu.core[i].exec_time);
+		DEBUG_WRITE("\033[1;34m");
+		print_program(run_p.pc, run_p.size, run_p.pid);
 		DEBUG_WRITE("\033[0m");
 		pthread_mutex_unlock(&lock);
 

@@ -122,3 +122,24 @@ void free_the_mem(int addr, int size){
     free_count++;
 }
 
+void print_program(int address, int size, int id){
+    int faddr = address, vaddr = 0;
+    int i, data = 0;
+    int *bin = malloc(5*sizeof(int));
+
+    DEBUG_WRITE("╔═══════════════════════════════════╗\n");
+    DEBUG_WRITE("	    pid: %d\n", id);
+    DEBUG_WRITE("	addr: %06x	size: %d\n", address, size);
+    for (i=0; i<size; i+=4){
+	bin = read_op(mem_fisikoa[faddr]);
+	if (data == 0){
+	    if (bin[0] == 15){data = 1;}
+	}
+	else{
+	    DEBUG_WRITE("   [data] [%06x] %d\n",vaddr, mem_fisikoa[faddr]);
+	}
+	vaddr += 4;
+	faddr += 4;
+    }
+    DEBUG_WRITE("╚═══════════════════════════════════╝\n\n");
+}

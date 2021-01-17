@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <string.h>
+#include <limits.h>
 #include "../include/global.h"
 #include "../include/loader.h"
 #include "../include/tree.h"
@@ -46,13 +47,10 @@ process_t create_process(char *filename){
     process_t p;
     p.size = 0;
     mm_t mm;
-    int bin, addr, op, v_addr;
-    int reg1, reg2, reg3;
-    //int* codium, *datum;
+    int bin, i;
 
     long pid = rand();			    // ID aleatoria sortu
     int vruntime = rand() % 250 + 1;	    // virtual runtime aleatorioa sortu 
-    int time = 0;
 
     char data[20];
     FILE *file = fopen(filename, "r");
@@ -73,40 +71,12 @@ process_t create_process(char *filename){
     mm.pgb = mem_p; //process page index
     mem_p++;
 
-    addr = mm.code;
-    while (fscanf(file, "%8x", &bin) != EOF){
-	if (addr < mm.data){
+    p.pc = mem_addr; //first command address
 
-	    op = (bin >> 28) & 0x0F;
-	    reg1 = (bin >> 24) & 0x0F;
-	    reg2 = (bin >> 20) & 0x0F;
-	    reg3 = (bin >> 16) & 0x0F;
-	    v_addr = bin & 0x00FFFFFF;
-	    switch (op){
-		case 0: //ld
-		    //printf("[code] 0x%06x: [%08x] op: ld r%d, 0x%06x\n",addr,bin, reg1, v_addr);
-		    time += LD;
-		    break;
-		case 1: //st
-		    //printf("[code] 0x%06x: [%08x] op: st r%d, 0x%06x\n",addr,bin, reg1, v_addr);
-		    time += ST;
-		    break;
-		case 2: //add
-		    //printf("[code] 0x%06x: [%08x] op: add r%d, r%d, r%d\n",addr,bin, reg1, reg2, reg3);
-		    time += ADD;
-		    break;
-		case 15: //exit
-		    //printf("[code] 0x%06x: [%08x] op: exit\n",addr,bin);
-		    time += EXIT;
-		    break;
-	    }
-	}
-	else{
-	    //printf("[data] 0x%06x: [%08x] %d\n",addr,bin,bin);
-	}
+    // load file in memory
+    while (fscanf(file, "%8x", &bin) != EOF){
 	mem_fisikoa[mem_addr] = bin;
 	mem_addr += 4;
-	addr += 4;
 	p.size++;
     }
     fclose(file);
@@ -117,6 +87,8 @@ process_t create_process(char *filename){
     p.time = 0;
     p.mem_man = mm;
     p.size *= 4;
+    //for (i=0; i<20;i++){p.ir[i] = 0;}
+    memset(p.ir, 0, 20*sizeof(int));
 
     return p;
 }
@@ -136,6 +108,7 @@ void* loader(void *f_pgen){
 
 
     //p = create_process();
+    p.vruntime = INT_MAX;
     root = new_node(p);
     leftmost = root;
     num_process = 0;
@@ -176,18 +149,16 @@ void* loader(void *f_pgen){
 
 		num_process++;
 
-		DEBUG_WRITE("\033[1;33m");   // color yellow
-		DEBUG_WRITE("[LOADER] process created, num_process = %d\n", num_process);
-		DEBUG_WRITE("\033[0m");
+		// color yellow
+		DEBUG_WRITE("\033[1;33m[LOADER] process created, num_process = %d\033[0m\n", num_process);
 
 
 		i = (i+1) % 50;
 		p_size = 0;
 	    }
 	    else{
-		DEBUG_WRITE("\033[1;33m");   // color yellow
-		DEBUG_WRITE("[LOADER] ERR: process not created. Not enough space\n");
-		DEBUG_WRITE("\033[0m");
+		// color yellow
+		DEBUG_WRITE("\033[1;33m[LOADER] ERR: process not created. Not enough space\033[0m\n");
 	    }
 	    // Tick-ak kontatzeko tick pribatua berbiarazi
             p_tick = *(int*) f_pgen;

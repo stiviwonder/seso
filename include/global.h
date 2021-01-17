@@ -16,6 +16,7 @@ typedef struct process{
     int vruntime;
     int time;
     int pc; // execution address
+    int ir[20];
     struct mm mem_man;
     int size;
 }process_t;
@@ -71,7 +72,7 @@ extern struct free_spaces *mem_free;
 extern volatile int free_count;
 /*====== DEFINES ======*/
 
-#define QUANTUM 30000
+#define QUANTUM 300
 
 #define LD 7
 #define ST 7

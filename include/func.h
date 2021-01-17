@@ -5,4 +5,5 @@ void init_cpu(int core_kop);
 int mmu(int faddr, int vaddr);
 int* read_op(int bin);
 void free_the_mem(int addr, int size);
+void print_program(int address, int size, int id);
 #endif

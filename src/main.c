@@ -35,18 +35,19 @@ int main(int argc, char* argv[]){
 
     // Cool banner 
     printf("\n");
-    printf("\033[1;31m");   // color red
+    printf("\033[1;32m");   // color green
     printf(" $$$$$$$\\  $$$$$$\\   $$$$$$$\\  $$$$$$\\\n");  
     printf("$$  _____|$$  __$$\\ $$  _____|$$  __$$\\\n");
     printf(" \\$$$$$$\\ $$$$$$$$ |\\$$$$$$\\  $$ /  $$ |\n");
     printf("  \\____$$\\$$   ____| \\____$$\\ $$ |  $$ |\n");
     printf("$$$$$$$  |\\$$$$$$$\\ $$$$$$$  |\\$$$$$$  |\n");
     printf("\\_______/  \\_______|\\_______/  \\______/\n");
-    printf("\033[0m");
     printf("\n");
 
     // Ask user for parameters
     printf("=================================================\n");
+    printf("\033[0m");
+
     printf("\nSelect clock rate (MHz): ");
     scanf("%f", &clock_f);
     printf("Select scheduler action rate (clock ticks): ");

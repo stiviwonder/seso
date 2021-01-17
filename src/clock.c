@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <semaphore.h>
+#include <string.h>
 #include "../include/global.h"
 #include "../include/tree.h"
 #include "../include/func.h"
@@ -20,8 +21,7 @@ volatile int mem_p;
 node_t* root;
 
 /*====== FUNCTION IMPLEMENTATIONS ======*/
-
-void execute(struct cpu cpu, int t){
+void execute(int t){
     int i;
 
     int *command = malloc(5*sizeof(int));
@@ -39,6 +39,7 @@ void execute(struct cpu cpu, int t){
 	    start = mem_fisikoa[cpu.core[i].execution.mem_man.pgb];
 	    data = command[4];
 
+
 	    // Core-aren prozesua amaitu badu QUANTUM-a agortu gabe 
 	    if (command[0] == 15 && cpu.core[i].exec_time < QUANTUM){
 		pthread_mutex_lock(&lock);
@@ -49,8 +50,10 @@ void execute(struct cpu cpu, int t){
 		free_the_mem(cpu.core[i].ptbr, cpu.core[i].execution.size);
 		pthread_mutex_unlock(&lock);
 
-		DEBUG_WRITE("\033[1;31m");   // color red
-		DEBUG_WRITE("[CLOCK] Process finished\n");
+		// color red
+		DEBUG_WRITE("\033[1;31m[CLOCK] Process finished\033[0m\n");
+		DEBUG_WRITE("\033[1;31m");
+		print_program(start, cpu.core[i].execution.size, cpu.core[i].execution.pid);
 		DEBUG_WRITE("\033[0m");
 	    }
 
@@ -61,6 +64,9 @@ void execute(struct cpu cpu, int t){
 		// "Lehentasuna" jaitsi eta core-ko exekuzio denbora berbiarazi
 		cpu.core[i].execution.vruntime += 10;	
 		cpu.core[i].exec_time = 0;	
+		cpu.core[i].execution.pc = cpu.core[i].pc;
+		memcpy(cpu.core[i].execution.ir, cpu.core[i].ir, 20*sizeof(int));
+		//cpu.core[i].execution.ir = cpu.core[i].ir;
 
 		// Prozesua zuhaitzan berriro sartzen da
 		insert(root, cpu.core[i].execution);
@@ -70,12 +76,11 @@ void execute(struct cpu cpu, int t){
 		cpu.core[i].executing = 0;
 		pthread_mutex_unlock(&lock);
 
-		DEBUG_WRITE("\033[1;31m");   // color red
-		DEBUG_WRITE("[CLOCK] QUANTUM finished\n");
-		DEBUG_WRITE("\033[0m");
+		// color red
+		DEBUG_WRITE("\033[1;31m[CLOCK] QUANTUM finished\033[0m\n");
 	    }
 	    
-	    // Exekuzio denborak eguneratzen dira
+	    // Komandoak hainbat ziklo exekutatu
 	    else{
 		switch (command[0]){
 		    case 0: //ld
@@ -83,9 +88,8 @@ void execute(struct cpu cpu, int t){
 			    cpu.core[i].pc += 4;
 			    cpu.core[i].execution.time = 0;
 
-			    DEBUG_WRITE("\033[1;31m");   // color red
-			    DEBUG_WRITE("[CLOCK]CORE%d => ld r%d, %08x =>  %d\n",cpu.core[i].id, command[1], data, cpu.core[i].ir[command[1]]);
-			    DEBUG_WRITE("\033[0m");
+			    // color red
+			    DEBUG_WRITE("\033[1;31m[CLOCK] CORE%d => ld r%d, %08x =>  %d\033[0m\n",cpu.core[i].id, command[1], data, cpu.core[i].ir[command[1]]);
 			}
 			else{
 			    cpu.core[i].ir[command[1]] = mem_fisikoa[mmu(start, data)]; // Ri <= xxxx
@@ -97,9 +101,8 @@ void execute(struct cpu cpu, int t){
 			    cpu.core[i].pc += 4;
 			    cpu.core[i].execution.time = 0;
 
-			    DEBUG_WRITE("\033[1;31m");   // color red
-			    DEBUG_WRITE("[CLOCK]CORE%d => st r%d, %08x =>  %d\n",cpu.core[i].id, command[1], data, cpu.core[i].ir[command[1]]);
-			    DEBUG_WRITE("\033[0m");
+			    // color red
+			    DEBUG_WRITE("\033[1;31m[CLOCK] CORE%d => st r%d, %08x =>  %d\033[0m\n",cpu.core[i].id, command[1], data, cpu.core[i].ir[command[1]]);
 			}
 			else{
 			    mem_fisikoa[mmu(start, data)] = cpu.core[i].ir[command[1]]; // Ri => xxxx
@@ -111,9 +114,8 @@ void execute(struct cpu cpu, int t){
 			    cpu.core[i].pc += 4;
 			    cpu.core[i].execution.time = 0;
 
-			    DEBUG_WRITE("\033[1;31m");   // color red
-			    DEBUG_WRITE("[CLOCK]CORE%d => add r%d, r%d, r%d => %d = %d + %d\n", cpu.core[i].id, command[1], command[2], command[3], cpu.core[i].ir[command[1]], cpu.core[i].ir[command[2]], cpu.core[i].ir[command[3]]);
-			    DEBUG_WRITE("\033[0m");
+			    // color red
+			    DEBUG_WRITE("\033[1;31m[CLOCK] CORE%d => add r%d, r%d, r%d => %d = %d + %d\033[0m\n", cpu.core[i].id, command[1], command[2], command[3], cpu.core[i].ir[command[1]], cpu.core[i].ir[command[2]], cpu.core[i].ir[command[3]]);
 			}
 			else{
 			    cpu.core[i].ir[command[1]] = cpu.core[i].ir[command[2]] + cpu.core[i].ir[command[3]];
@@ -146,7 +148,7 @@ void* erlojua(void *f_clock){
         tick++;
 
 	// Prozesuak exekutatu
-	execute(cpu, (int)t_tick);
+	execute((int)t_tick);
 
 	// Periodoa itxioin beste hariei maiztasun egokiarekin mugitzeko
         usleep((int)t);
