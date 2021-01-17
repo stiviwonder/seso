@@ -90,11 +90,11 @@ int mmu(int faddr, int vaddr){
 int* read_op(int bin){
     int *command = malloc(5*sizeof(int));
 
-    command[0] = (bin >> 28) & 0x0F;
-    command[1] = (bin >> 24) & 0x0F;
-    command[2] = (bin >> 20) & 0x0F;
-    command[3] = (bin >> 16) & 0x0F;
-    command[4] = bin & 0x00FFFFFF;
+    command[0] = (bin >> 28) & 0x0F; // op
+    command[1] = (bin >> 24) & 0x0F; // r1
+    command[2] = (bin >> 20) & 0x0F; // r2
+    command[3] = (bin >> 16) & 0x0F; // r3
+    command[4] = bin & 0x00FFFFFF;   // vaddr
 
     switch (command[0]){
 	case 0: //ld
@@ -112,3 +112,13 @@ int* read_op(int bin){
     }
     return command;
 }
+
+void free_the_mem(int addr, int size){
+
+    struct free_spaces fs;
+    fs.addr = addr;
+    fs.size = size;
+    mem_free[free_count] = fs;
+    free_count++;
+}
+

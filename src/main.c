@@ -19,6 +19,9 @@ cpu_t cpu;
 int* mem_fisikoa;
 volatile int mem_addr;
 volatile int mem_p;
+volatile int freespace;
+volatile int free_count;
+struct free_spaces *mem_free;
 
 /*====== MAIN ======*/
 
@@ -29,7 +32,6 @@ int main(int argc, char* argv[]){
     int timer_f;
     int pgen_f;
     int core_kop;
-    int mem_size = (int) pow(2,16);
 
     // Cool banner 
     printf("\n");
@@ -58,9 +60,14 @@ int main(int argc, char* argv[]){
     init_cpu(core_kop);
 
     // Initialize memori
-    mem_fisikoa = malloc(mem_size*sizeof(int));
+    mem_fisikoa = malloc(MEM_SIZE*sizeof(int));
     mem_addr = 1000;
     mem_p = 0;
+    freespace = MEM_SIZE - mem_addr;
+    mem_free = malloc(MEM_SIZE*sizeof(struct free_spaces));
+    mem_free[0].addr = mem_addr;
+    mem_free[0].size = freespace;
+    free_count = 1;
 
     // Semaforo guztiak hasieratu
     sem_init(&sem_timer, 0, 0);

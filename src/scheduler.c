@@ -51,6 +51,8 @@ void* scheduler(void *tid){
 		// Core-an prozesua exekutatzen jarri
 		cpu.core[i].execution = run_p;
 		cpu.core[i].executing = 1;
+		cpu.core[i].ptbr = run_p.mem_man.pgb; // addres of the program page 
+		cpu.core[i].pc = mem_fisikoa[run_p.mem_man.pgb]; //addres of the first command
 		DEBUG_WRITE("[SCHEDULER] core%d: execution time: %d\n", cpu.core[i].id, cpu.core[i].exec_time);
 		pthread_mutex_unlock(&lock);
 

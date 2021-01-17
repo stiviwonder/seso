@@ -33,24 +33,17 @@ void execute(struct cpu cpu, int t){
 	// Uneko core-a zerbait exekutatzen ari bada bere prozesuaren egoera eguneratzen du
 	if (cpu.core[i].executing == 1){
 
-	    DEBUG_WRITE("[CLOCK] core%d: execution time: %d\n", cpu.core[i].id, cpu.core[i].exec_time);
-	    printf("\n\n");
-	    command = read_op(mem_fisikoa[cpu.core[i].execution.mem_man.pgb]);
-	    data_addr = mmu(cpu.core[i].execution.mem_man.pgb, command[4]);
-	    printf("\ncommand data[%08x]: %d", command[4], mem_fisikoa[data_addr]);
-	    printf("\n\n");
-
-	    // init of this => SCHEDULER JOB
-	    cpu.core[i].pc = cpu.core[i].execution.mem_man.pgb;
-	    cpu.core[i].ir = mem_fisikoa[data_addr];
+	    // proces the command for execution
+	    command = read_op(mem_fisikoa[cpu.core[i].pc]);
 
 	    // Core-aren prozesua amaitu badu QUANTUM-a agortu gabe 
-	    if (cpu.core[i].execution.time <= 0 && cpu.core[i].exec_time < QUANTUM){
+	    if (command[0] == 15 && cpu.core[i].exec_time < QUANTUM){
 		pthread_mutex_lock(&lock);
 		
 		// Core-a askatzen du
 		cpu.core[i].executing = 0; 
 		cpu.core[i].exec_time = 0;	
+		free_the_mem(cpu.core[i].ptbr, cpu.core[i].execution.size);
 		pthread_mutex_unlock(&lock);
 		DEBUG_WRITE("[CLOCK] Process finished\n");
 	    }
@@ -76,7 +69,34 @@ void execute(struct cpu cpu, int t){
 	    
 	    // Exekuzio denborak eguneratzen dira
 	    else{
-		cpu.core[i].execution.time -= 1; // process time in cicles
+		switch (command[0]){
+		    case 0: //ld
+			if (cpu.core[i].execution.time >= LD){
+			    cpu.core[i].pc += 4;
+			    cpu.core[i].execution.time = 0;
+			    DEBUG_WRITE("[CLOCK] LOAD finished :)\n");
+			}
+			else{
+			    cpu.core[i].ir[0] = mem_fisikoa[mmu(cpu.core[i].execution.mem_man.pgb, command[4])];
+			    cpu.core[i].execution.time ++;
+			    DEBUG_WRITE("[CLOCK] LOAD r%d %08x => ir0 = %d\n", command[1], cpu.core[i].ir[0]);
+			}
+			break;
+		    case 1: //st
+			if (cpu.core[i].execution.time >= ST){
+			    cpu.core[i].pc += 4;
+			    cpu.core[i].execution.time = 0;
+			    DEBUG_WRITE("[CLOCK] STORE finished :)\n");
+			}
+			else{
+			    cpu.core[i].ir[0] = mem_fisikoa[mmu(cpu.core[i].execution.mem_man.pgb, command[4])];
+			    cpu.core[i].execution.time ++;
+			    DEBUG_WRITE("[CLOCK] LOAD r%d %08x => ir0 = %d\n", command[1], cpu.core[i].ir[0]);
+			}
+			break;
+		    case 2: //add
+			break;
+		}
 		cpu.core[i].exec_time += t;	 // core exec time in ms
 	    }
 	}
